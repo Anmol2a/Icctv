@@ -1,58 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clearkey DRM MPD Video Streaming</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JWPlayer with Clearkey DRM and Telegram Button</title>
+    <script src="https://cdn.jwplayer.com/libraries/XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo.js"></script>
+    <style>
+        #telegram-button-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+        }
+
+        #telegram-button {
+            background-color: black;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        #telegram-button:hover {
+            background-color: #333;
+        }
+    </style>
 </head>
 <body>
-  <!-- Video Player -->
-  <video id="video" width="200" height="150" controls></video>
 
-  <!-- Join Telegram Button -->
-  <a href="https://t.me/+e6G48oujQuExOTg1" target="_blank">
-    <button>Join Telegram</button>
-  </a>
+<div id="jwplayer-container" style="width: 100%; height: 100%;"></div>
 
-  <!-- Shaka Player Library -->
-  <script src="https://cdn.jsdelivr.net/npm/shaka-player@3.1.0/dist/shaka-player.compiled.js"></script>
-  
-  <script>
-    // Initialize Shaka Player
-    function initPlayer() {
-      const videoElement = document.getElementById('video');
-      const player = new shaka.Player(videoElement);
+<div id="telegram-button-container">
+    <a href="https://t.me/+e6G48oujQuExOTg1" target="_blank" id="telegram-button">Join Telegram</a>
+</div>
 
-      // Error handling
-      player.addEventListener('error', onErrorEvent);
-
-      // DRM configuration for Clearkey
-      const config = {
+<script>
+    jwplayer("jwplayer-container").setup({
+        file: "https://a201aivottlinear-a.akamaihd.net/OTTB/pdx-nitro/live/clients/dash/enc/wr8i0xhnut/out/v1/190f1d69a3d5467f8fb7d9df4339bc49/cenc.mpd", // Replace with your MPD URL
+        type: "application/dash+xml",
         drm: {
-          clearKeys: {
-            // Use the provided key ID and key value from your URL
-            'ae7076b647133606b704d33e4cef5134': '810251515584cf71216d9a2d1ebf04bb'
-          }
-        }
-      };
+            clearkey: {
+                "com.widevine.alpha": {
+                    "key": "cb8daf414566aa17d06f8294f3f3b444", // Replace with your Clearkey key
+                    "keyid": "89d58908a57d70ef87bf16c9b5821ca2" // Replace with your Clearkey key ID
+                }
+            }
+        },
+        width: "100%",
+        height: "auto"
+    });
+</script>
 
-      // Configure the player with the DRM settings
-      player.configure(config);
-
-      // Load the MPD manifest file
-      player.load('https://live-d-01-icc-we.akamaized.net/variant/v1blackout/vcg-01-d/DASH_DASH/Live/channel(vcg-01-ch-hd-02)/hdntl=exp=1740328395~acl=%2fvariant%2fv1blackout%2fvcg-01-d%2f*~data=hdntl~hmac=17eb82a32e2f37cd44acee6f917b97b901e0d63a387e9616eb1c0fca59bd7de9/manifest.mpd') 
-        .then(function() {
-          console.log('The video has been successfully loaded!');
-        }).catch(onError); // Handle errors during the loading process
-    }
-
-    // Error handling function
-    function onErrorEvent(error) {
-      console.error('Error code', error.detail.code, 'object', error.detail);
-    }
-
-    // Initialize the player
-    initPlayer();
-  </script>
 </body>
 </html>
