@@ -39,8 +39,14 @@
             const video = document.getElementById('video');
             const player = new shaka.Player(video);
 
-            // Handle error
+            // Event Listeners for Debugging
             player.addEventListener('error', onErrorEvent);
+            player.addEventListener('buffering', (event) => {
+                console.log('Buffering event:', event);
+            });
+            player.addEventListener('loadeddata', () => {
+                console.log('Video loaded successfully');
+            });
 
             // Set up ClearKey DRM
             const clearKeyConfig = {
@@ -68,6 +74,19 @@
         function onErrorEvent(event) {
             onError(event.detail);
         }
+
+        // Additional event listeners on video element
+        document.getElementById('video').addEventListener('error', (event) => {
+            console.error('Video element error:', event);
+        });
+
+        document.getElementById('video').addEventListener('stalled', () => {
+            console.warn('Video playback stalled');
+        });
+
+        document.getElementById('video').addEventListener('waiting', () => {
+            console.warn('Video is buffering...');
+        });
 
         initPlayer();
     </script>
